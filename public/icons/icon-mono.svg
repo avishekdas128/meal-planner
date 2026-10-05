@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- single-colour silhouette for Android 13+ themed icons (colour comes from the alpha channel only) -->
-  <circle cx="256" cy="256" r="166" fill="none" stroke="#000" stroke-width="16"/>
-  <circle cx="187" cy="187" r="40" fill="#000"/><circle cx="325" cy="187" r="40" fill="#000"/>
-  <circle cx="187" cy="325" r="40" fill="#000"/><circle cx="325" cy="325" r="40" fill="#000"/>
-  <circle cx="256" cy="256" r="50" fill="#000"/>
+  <!-- single-colour silhouette for Android 13+ themed icons: the shape comes from the alpha channel only -->
+  <g transform="translate(0 -14)" stroke-linejoin="round" stroke-linecap="round" fill="#000" stroke="#000">
+    <g fill="none" stroke-width="20"><path d="M204 198C184 170 224 152 204 120C194 104 202 92 210 86"/><path d="M256 188C236 160 276 142 256 110C246 94 254 82 262 76"/><path d="M308 198C288 170 328 152 308 120C298 104 306 92 314 86"/></g>
+    <path d="M190 438H322L314 466C312 472 306 474 300 474H212C206 474 200 472 198 466Z" stroke-width="6"/>
+    <path d="M88 264C88 374 164 442 256 442C348 442 424 374 424 264Z" stroke-width="6"/>
+    <ellipse cx="256" cy="264" rx="168" ry="40" fill="none" stroke-width="16"/>
+    <path d="M160 268C160 198 304 198 304 268C304 288 160 288 160 268Z" stroke-width="6"/>
+  </g>
 </svg>

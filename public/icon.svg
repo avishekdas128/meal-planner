@@ -1,31 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Khana Plan: a thali">
-  <defs>
-    <!-- same deep warm dark as the app, with a faint turmeric glow behind the plate -->
-    <radialGradient id="bg" cx="50%" cy="46%" r="70%"><stop offset="0" stop-color="#34261a"/><stop offset="1" stop-color="#17110a"/></radialGradient>
-    <g id="katori">
-      <circle r="39" fill="#bcc4cd"/>
-      <circle r="39" fill="none" stroke="#98a3af" stroke-width="3"/>
-      <circle r="29" fill="currentColor"/>
-      <ellipse cx="-9" cy="-11" rx="11" ry="5" fill="#fff" opacity=".4" transform="rotate(-30 -9 -11)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Khana Plan: a steaming bowl of curry and rice">
+  <!-- transparent background on purpose; the dark outline keeps it readable on light and dark surfaces -->
+  <g transform="translate(0 -14)" stroke-linejoin="round" stroke-linecap="round">
+    <!-- steam: dark under-stroke + turmeric top stroke, so it shows on any background -->
+    <g fill="none">
+      <path d="M204 198C184 170 224 152 204 120C194 104 202 92 210 86" stroke="#2b1d12" stroke-width="30"/>
+      <path d="M256 188C236 160 276 142 256 110C246 94 254 82 262 76" stroke="#2b1d12" stroke-width="30"/>
+      <path d="M308 198C288 170 328 152 308 120C298 104 306 92 314 86" stroke="#2b1d12" stroke-width="30"/>
+      <path d="M204 198C184 170 224 152 204 120C194 104 202 92 210 86" stroke="#f3b94f" stroke-width="15"/>
+      <path d="M256 188C236 160 276 142 256 110C246 94 254 82 262 76" stroke="#f3b94f" stroke-width="15"/>
+      <path d="M308 198C288 170 328 152 308 120C298 104 306 92 314 86" stroke="#f3b94f" stroke-width="15"/>
     </g>
-  </defs>
-  <rect width="512" height="512" fill="url(#bg)"/>
-  <!-- plate grows a little vs. before (no coloured field to fill), still inside the 80% maskable safe zone -->
-  <g transform="translate(256 256) scale(1.04) translate(-256 -256)">
-    <ellipse cx="256" cy="268" rx="176" ry="170" fill="#000" opacity=".4"/>
-    <circle cx="256" cy="256" r="172" fill="#f5f0e7"/>
-    <circle cx="256" cy="256" r="172" fill="none" stroke="#d6ccba" stroke-width="6"/>
-    <circle cx="256" cy="256" r="150" fill="none" stroke="#e5dccb" stroke-width="3"/>
-    <use href="#katori" x="187" y="187" color="#f1b53c"/>
-    <use href="#katori" x="325" y="187" color="#5f9142"/>
-    <use href="#katori" x="187" y="325" color="#c8472b"/>
-    <use href="#katori" x="325" y="325" color="#fffaf0"/>
-    <circle cx="256" cy="256" r="51" fill="#fffdf8" stroke="#e1d9c8" stroke-width="3"/>
-    <g fill="#ece4d3">
-      <ellipse cx="238" cy="244" rx="9" ry="4" transform="rotate(-25 238 244)"/><ellipse cx="262" cy="240" rx="9" ry="4" transform="rotate(15 262 240)"/>
-      <ellipse cx="274" cy="262" rx="9" ry="4" transform="rotate(-10 274 262)"/><ellipse cx="248" cy="268" rx="9" ry="4" transform="rotate(30 248 268)"/>
-      <ellipse cx="232" cy="262" rx="9" ry="4" transform="rotate(-5 232 262)"/><ellipse cx="258" cy="280" rx="9" ry="4" transform="rotate(20 258 280)"/>
+    <!-- foot -->
+    <path d="M190 438H322L314 466C312 472 306 474 300 474H212C206 474 200 472 198 466Z" fill="#8f2f1b" stroke="#2b1d12" stroke-width="12"/>
+    <!-- bowl body -->
+    <path d="M88 264C88 374 164 442 256 442C348 442 424 374 424 264Z" fill="#c8472b" stroke="#2b1d12" stroke-width="12"/>
+    <path d="M110 318Q256 392 402 318" fill="none" stroke="#f3b94f" stroke-width="10"/>
+    <path d="M118 304C126 354 158 394 204 414" fill="none" stroke="#e8704d" stroke-width="14" opacity=".7"/>
+    <!-- rim, curry, rice -->
+    <ellipse cx="256" cy="264" rx="168" ry="40" fill="#e25b3a" stroke="#2b1d12" stroke-width="12"/>
+    <ellipse cx="256" cy="266" rx="146" ry="29" fill="#f0a53a"/>
+    <path d="M160 268C160 198 304 198 304 268C304 288 160 288 160 268Z" fill="#fffaf0" stroke="#2b1d12" stroke-width="10"/>
+    <g fill="#e6d9bf">
+      <ellipse cx="200" cy="240" rx="9" ry="4" transform="rotate(-25 200 240)"/><ellipse cx="228" cy="226" rx="9" ry="4" transform="rotate(15 228 226)"/>
+      <ellipse cx="258" cy="244" rx="9" ry="4" transform="rotate(-10 258 244)"/><ellipse cx="214" cy="262" rx="9" ry="4" transform="rotate(30 214 262)"/>
+      <ellipse cx="248" cy="264" rx="9" ry="4" transform="rotate(-5 248 264)"/><ellipse cx="280" cy="256" rx="9" ry="4" transform="rotate(20 280 256)"/>
     </g>
-    <circle cx="262" cy="250" r="6" fill="#5f9142"/>
+    <!-- coriander leaves on the curry -->
+    <g fill="#5f9142" stroke="#2b1d12" stroke-width="6">
+      <ellipse cx="342" cy="262" rx="15" ry="8" transform="rotate(-30 342 262)"/><ellipse cx="318" cy="280" rx="14" ry="7" transform="rotate(20 318 280)"/><ellipse cx="364" cy="276" rx="13" ry="7" transform="rotate(35 364 276)"/>
+    </g>
   </g>
 </svg>
