@@ -50,7 +50,7 @@ Because there is no backend, each user pastes **their own Anthropic API key** (g
 Requires Node 18+ (only for the static file server; the app itself has no dependencies).
 
 ```bash
-git clone https://github.com/<your-username>/meal-planner.git
+git clone https://github.com/avishekdas128/meal-planner.git
 cd meal-planner
 npm run dev          # http://localhost:5178
 ```
