@@ -55,6 +55,21 @@ Each provider keeps its own key, and you can override the model name in **House 
 
 **Models get retired, and the app copes.** Free-tier model names change quickly (`gemini-2.5-flash` stopped working for new keys). If Gemini answers that the model is gone or unavailable, the app asks the user's own key which models it can see ([`ListModels`](https://ai.google.dev/api/models)), picks the newest stable `gemini-N.M-flash` (never `-lite`, `-preview`, `-tts`, `-image`), retries once, and remembers it in **House → AI provider → Model**. If that also fails you'll see Google's own message; set a model by hand from [Google's model list](https://ai.google.dev/gemini-api/docs/models).
 
+### Token use per plan
+
+Every plan is one request. Expect roughly:
+
+| Request | Sent (input) | Received (output, incl. thinking) | Total |
+|---|---|---|---|
+| Full-day plan (3 meals), one or two flatmates, default pantry | ~1,100 | ~1,000 | **~2,100** |
+| Full-day plan, 4 flatmates, 60 pantry items, a long meal history | ~2,300 | ~1,000 to 1,200 | **~3,200 to 3,500** |
+| "Different ideas" for a single meal | ~1,100 to 2,300 | ~550 | **~1,600 to 2,800** |
+
+- Most of the input is the fixed instructions (~800 tokens) and the allowed-emoji list (~130); the rest grows with your flat, pantry and the last 40 meals.
+- Output is about 70 tokens per dish in English and about 100 in the Indian languages (their scripts take more tokens per word), plus roughly 300 tokens of "thinking" that Gemini 3, gpt-oss and Claude spend before answering.
+- The app shows this as a note under **House → AI provider** and computes it live from the real prompt, so it follows your pantry and flat. It is an estimate (about ±30%), not a meter: counts differ slightly between providers' tokenizers.
+- What it means for free tiers: one Groq plan uses most of the free plan's 8,000 tokens per minute, so two plans inside a minute can hit the limit; OpenRouter's free models allow 50 requests a day (about 50 plans); Gemini's free tier is generous for a household. With Claude (Sonnet, at the time of writing $2 per million input tokens and $10 per million output) a full plan costs about 1 to 2 US cents.
+
 **Troubleshooting**
 
 | You see | What it means |
@@ -64,7 +79,7 @@ Each provider keeps its own key, and you can override the model name in **House 
 | *This model … is no longer available* | The model was retired and no newer one was found. Pick another in **House → Model**. |
 | *The AI sent back something unreadable* | A free model ignored the format. Tap **Plan again**, or try another provider. |
 
-**Adding a provider:** add it to `PROVIDERS` and `adapters` in [`public/providers.js`](public/providers.js) (anything OpenAI-compatible is a few lines, see `groq`), allow its host in `connect-src` in [`public/_headers`](public/_headers), and run `npm run check:i18n`.
+**Adding a provider:** add it to `PROVIDERS` and `adapters` in [`public/providers.js`](public/providers.js) (anything OpenAI-compatible is a few lines, see `groq`), allow its host in `connect-src` in [`public/_headers`](public/_headers), and run `npm run check`.
 
 ### A note on API keys
 
@@ -130,7 +145,7 @@ wrangler.jsonc          Cloudflare config (serves ./public)
 1. Copy [`public/lang/hi.js`](public/lang/hi.js) to `public/lang/<code>.js` and translate the values. Keep `{placeholders}` and `<em>…</em>` as they are. A key you leave out falls back to English, which is how loanwords such as *Pantry* stay English.
 2. Add the language to `LANGS` in [`public/i18n.js`](public/i18n.js): its code, native name, the local word for "food" (it animates in the logo), the word for "language", and a Noto Sans family if the script isn't Devanagari or Latin.
 3. Add the file to the `SHELL` list in [`public/sw.js`](public/sw.js) so it works offline, and bump `CACHE`.
-4. Run `npm run check:i18n`.
+4. Run `npm run check` (validates every translation file and that every emoji used in the code has a bundled image).
 
 The translations were machine-assisted and have not all been reviewed by native speakers. Corrections are very welcome.
 

@@ -145,4 +145,5 @@ export default {
   'prov.getpaid': "Get a key →",
   'prov.model': "Model",
   'err.rate': "Free limit reached for now. Wait a minute and try again, or switch provider in the House tab ⏳",
+  'tok.note': "A full-day plan ({n} meals) uses about {tot} tokens (roughly {inn} sent, {out} received). \"Different ideas\" for one meal uses about {one}. It grows a little with a bigger pantry or more flatmates.",
 };

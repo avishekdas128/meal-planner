@@ -143,4 +143,5 @@ export default {
   'prov.getpaid': "Key मिळवा →",
   'prov.model': "Model",
   'err.rate': "आत्ताचं free limit संपलं. एक मिनिट थांबून पुन्हा प्रयत्न करा, किंवा House टॅबमध्ये provider बदला ⏳",
+  'tok.note': "पूर्ण दिवसाचा plan ({n} meals) साधारण {tot} tokens वापरतो (सुमारे {inn} पाठवले, {out} परत आले). एका meal साठी \"आणखी ideas\" सुमारे {one} वापरतो. मोठी pantry किंवा जास्त flatmates असतील तर थोडा वाढतो.",
 };

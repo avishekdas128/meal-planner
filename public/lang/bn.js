@@ -143,4 +143,5 @@ export default {
   'prov.getpaid': "Key নিন →",
   'prov.model': "Model",
   'err.rate': "এখনকার free limit শেষ। এক মিনিট অপেক্ষা করে আবার চেষ্টা করুন, বা House ট্যাবে provider বদলান ⏳",
+  'tok.note': "পুরো দিনের plan ({n}টা meal) প্রায় {tot} tokens খরচ করে (মোটামুটি {inn} পাঠানো, {out} ফেরত)। একটা meal-এর \"আরও ideas\" প্রায় {one} নেয়। বড় pantry বা বেশি flatmate থাকলে একটু বাড়ে।",
 };

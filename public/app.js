@@ -134,8 +134,9 @@ function normalise(raw, meals) {
 }
 const parseJson = text => { const s = String(text || '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, ''); return JSON.parse(s.slice(s.indexOf('{'), s.lastIndexOf('}') + 1)); };
 
-async function ask(meals, avoid = []) {
-  if (!apiKey()) throw new Error(t('err.nokey'));
+// everything sent to the AI for one request. ask() sends it; tokenEstimate() measures it, so the note shown in
+// House always matches what really goes out (it grows with the pantry, the flat and the meal history).
+function buildPrompt(meals, avoid = []) {
   const day = DAYS[new Date().getDay()];
   const payload = {
     today: day, language: lang().e, mealsToPlan: meals, alreadyShown: avoid,
@@ -148,9 +149,29 @@ async function ask(meals, avoid = []) {
     type: 'object', additionalProperties: false, required: ['meals'],
     properties: { meals: { type: 'object', additionalProperties: false, required: meals, properties: Object.fromEntries(meals.map(m => [m, { type: 'array', items: optSchema }])) } },
   };
+  return { system: SYSTEM + shapeHint(meals), user: JSON.stringify(payload), schema };
+}
+
+// Rough, on purpose. Input: ~3.7 characters per token for English and JSON, plus ~3 tokens per emoji in the allowed list.
+// Output: each option is ~70 tokens in English and ~100 in the Indian languages (their scripts take more tokens per word),
+// plus JSON wrapping and ~300 tokens of 'thinking' that these models spend (and bill) before answering.
+const tokenEstimate = meals => {
+  const p = buildPrompt(meals);
+  const inn = Math.round((p.system.length + p.user.length) / 3.7 + 3 * DISH_EMOJI.length), out = meals.length * 3 * (lang().c === 'en' ? 70 : 100) + 30 + 300;
+  return { inn, out, total: inn + out };
+};
+const round100 = n => Math.round(n / 100) * 100;
+const tokenNote = () => {
+  const full = tokenEstimate(activeMeals()), one = tokenEstimate(['dinner']);
+  return t('tok.note', { n: activeMeals().length, inn: round100(full.inn).toLocaleString('en-IN'), out: round100(full.out).toLocaleString('en-IN'), tot: round100(full.total).toLocaleString('en-IN'), one: round100(one.total).toLocaleString('en-IN') });
+};
+
+async function ask(meals, avoid = []) {
+  if (!apiKey()) throw new Error(t('err.nokey'));
+  const { system, user, schema } = buildPrompt(meals, avoid);
   let text;
   try {
-    text = await callProvider({ provider: S.provider, key: apiKey(), model: S.models[S.provider] || byId(S.provider).model, system: SYSTEM + shapeHint(meals), user: JSON.stringify(payload), schema, onModel: m => { S.models[S.provider] = m; save(); } });
+    text = await callProvider({ provider: S.provider, key: apiKey(), model: S.models[S.provider] || byId(S.provider).model, system, user, schema, onModel: m => { S.models[S.provider] = m; save(); } });
   } catch (e) {
     if (!(e instanceof AiError)) throw e;
     throw new Error({ net: t('err.net'), key: t('err.key'), rate: t('err.rate'), stuck: t('err.stuck') }[e.kind] || e.detail || t('err.http', { s: e.status }));
@@ -202,7 +223,7 @@ function houseSec() {
 const provChips = () => `<div class="provs">${PROVIDERS.map(p => `<button class="prov ${S.provider === p.id ? 'on' : ''}" data-act="prov" data-v="${p.id}" aria-pressed="${S.provider === p.id}"><b>${p.name}</b>${p.free ? `<small class="freebadge">${t('prov.free')}</small>` : ''}</button>`).join('')}</div>`;
 const keyField = () => { const p = byId(S.provider); return `<input class="cin solid" type="password" autocomplete="off" spellcheck="false" placeholder="${esc(p.keyHint)}" aria-label="${esc(p.name)} API key" value="${esc(apiKey())}" data-bind="apiKey"><a class="getkey" href="${p.keyUrl}" target="_blank" rel="noopener">${t(p.free ? 'prov.get' : 'prov.getpaid')}</a>`; };
 const provBox = () => provChips() + keyField();
-const keySec = () => { const p = byId(S.provider); return `<section class="sec" id="aisec"><h2>${t('prov.t')}</h2><p class="sub">${t('prov.s')}</p>${provChips()}<h3>${t('key.t')}</h3>${keyField()}<p class="note">${t('key.s')}</p><h3>${t('prov.model')}</h3><input class="cin solid" data-bind="model" aria-label="${t('prov.model')}" placeholder="${esc(p.model)}" value="${esc(S.models[S.provider] || '')}" autocomplete="off" spellcheck="false"></section>`; };
+const keySec = () => { const p = byId(S.provider); return `<section class="sec" id="aisec"><h2>${t('prov.t')}</h2><p class="sub">${t('prov.s')}</p>${provChips()}<h3>${t('key.t')}</h3>${keyField()}<p class="note">${t('key.s')}</p><h3>${t('prov.model')}</h3><input class="cin solid" data-bind="model" aria-label="${t('prov.model')}" placeholder="${esc(p.model)}" value="${esc(S.models[S.provider] || '')}" autocomplete="off" spellcheck="false"><p class="note tok">${tokenNote()}</p></section>`; };
 
 const themeSec = () => `<section class="sec"><h2>${t('theme.t')}</h2><div class="chips" style="margin-top:12px">${THEMES.map(k => chip('theme', `data-v="${k}"`, t('theme.' + k), S.theme === k)).join('')}</div></section>`;
 const langSec = () => `<section class="sec"><h2>${t('lang.sec')}</h2><div class="chips" style="margin-top:12px">${LANGS.map(l => `<button class="chip ${S.lang === l.c ? 'on' : ''}" lang="${l.c}" style="font-family:${fontOf(l)},'Mukta',sans-serif" data-act="lang" data-v="${l.c}">${l.n}</button>`).join('')}</div></section>`;
