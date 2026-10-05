@@ -1,0 +1,16 @@
+# dependencies / tooling output
+node_modules/
+.wrangler/
+.dev.vars
+
+# editor + OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# local assistant / preview tooling
+.claude/
+
+# logs
+*.log

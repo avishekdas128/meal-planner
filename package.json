@@ -1,0 +1,15 @@
+{
+  "name": "meal-planner",
+  "version": "1.0.0",
+  "description": "खाना Plan: an AI meal planner PWA for flats with a cook. Works in 8 languages.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx --yes serve -l 5178 public",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "preview": "npx --yes wrangler dev",
+    "deploy": "npx --yes wrangler deploy"
+  },
+  "engines": { "node": ">=18" }
+}

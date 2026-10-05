@@ -1,0 +1,9 @@
+{
+  // Cloudflare: serves ./public as a static site (HTML, JS, CSS, PWA files). No server code, no build step.
+  // `public/_headers` sets the security headers and cache rules.
+  "name": "meal-planner",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public"
+  }
+}
