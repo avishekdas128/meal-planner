@@ -118,6 +118,12 @@ The translations were machine-assisted and have not all been reviewed by native 
 - Pantry item and dish names stay in Roman script by design (like grocery apps).
 - No sync between phones: each device keeps its own flat.
 
+## Credits
+
+- Emoji artwork: [Twemoji](https://github.com/jdecked/twemoji) by Twitter and contributors (the jdecked fork), licensed [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). The SVGs in `public/emoji/` are bundled so emoji look identical on every phone; refresh them with `node scripts/build-emoji.mjs`.
+- Fonts: Yatra One, Mukta and Noto Sans (SIL Open Font License), via Google Fonts.
+- App icon and share image: drawn for this project.
+
 ## License
 
 [MIT](LICENSE)

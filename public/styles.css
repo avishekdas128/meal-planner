@@ -326,3 +326,12 @@ input[type=range] { margin: 0; }
 .qscroll::-webkit-scrollbar, .dbody::-webkit-scrollbar { width: 6px; }
 .qscroll::-webkit-scrollbar-thumb, .dbody::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--mut) 45%, transparent); border-radius: 99px; }
 .qscroll::-webkit-scrollbar-track, .dbody::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- bundled emoji (see emoji.js) ---------- */
+.emj { width: 1.12em; height: 1.12em; vertical-align: -.2em; display: inline-block; -webkit-user-drag: none; user-select: none; }
+/* inside the flex/grid tiles the glyph is the only child: centre it and drop the baseline offset */
+.av .emj, .emo .emj, .obig .e .emj, .qe .emj, .sbig .emj, .segdesc span .emj, .stackemo .emj, .big-e .emj, .ico .emj, #tabs b .emj { vertical-align: middle; }
+.sbig .emj { width: 1em; height: 1em; }
+
+.credit { text-align: center; color: var(--mut); font-size: 13px; margin: 8px 0 0; }
+.credit a { color: inherit; text-underline-offset: 3px; }

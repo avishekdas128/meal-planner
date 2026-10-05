@@ -32,3 +32,7 @@ export const PANTRY = [
 
 // ponytail: fixed starter pantry; users tap the rest on/off.
 export const STAPLES = ['atta', 'rice', 'poha', 'bread', 'toor dal', 'moong dal', 'onion', 'tomato', 'potato', 'ginger', 'garlic', 'green chilli', 'milk', 'curd', 'eggs', 'salt', 'oil', 'haldi', 'red chilli powder', 'dhania powder', 'jeera', 'mustard seeds', 'garam masala', 'sugar', 'tea'];
+
+// The only emoji a dish may use. Claude is constrained to this list (JSON-schema enum), and each one ships
+// as a bundled SVG in /emoji, so a dish can never render as an empty box on an older phone.
+export const DISH_EMOJI = ['🍛', '🍲', '🥘', '🍚', '🍜', '🍝', '🥗', '🥣', '🍳', '🥞', '🫓', '🥙', '🌯', '🥪', '🍞', '🥐', '🥟', '🍢', '🧆', '🍤', '🐟', '🍗', '🍖', '🥚', '🧀', '🥬', '🥔', '🥕', '🍆', '🌽', '🫑', '🍅', '🥥', '🥜', '🫘', '🧅', '🧄', '🍋', '🥛', '☕', '🫖', '🍌', '🥭', '🍎'];

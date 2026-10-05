@@ -1,4 +1,5 @@
-import { DAYS, AVATARS, ALLERGIES, REGIONS, dishesFor, PANTRY, STAPLES } from './data.js';
+import { DAYS, AVATARS, ALLERGIES, REGIONS, dishesFor, PANTRY, STAPLES, DISH_EMOJI } from './data.js';
+import './emoji.js'; // swaps every emoji for a bundled SVG so it looks the same on every phone
 import { LANGS, WORDS, t, lang, setLang, loadWordFonts, fontOf, weightOf, dayLabel, dateLabel } from './i18n.js';
 
 const MODEL = 'claude-sonnet-5-5';
@@ -97,13 +98,13 @@ Rules:
 - Variety: don't repeat anything in recentMeals within repeatEveryDays; dishes rated -1 never come back; dishes rated 1 may return after that window.
 - Breakfast should be breakfast-ish, lunch/dinner proper meals. Give each requested meal exactly 3 options: at least one that is fully makeable from the pantry (missing = []), and at least one tempting option that needs a few items ordered. Don't repeat dishes across meals or in alreadyShown.
 - "missing" lists only key ingredients not in the pantry (assume water, and anything in the pantry list). Use short English grocery names like "paneer", "capsicum", whatever the language.
-- "dish" is the name a cook would recognise in Roman script, like "Jeera aloo with phulka" (never a marketing title).
+- "dish" is the name a cook would recognise in Roman script, like "Jeera aloo with phulka" (never a marketing title). "emoji" must be the closest match from the allowed list.
 - "why" is one short, specific line (max 14 words) on why it fits this house today. Name a person, the pantry, a goal or the time pressure. Warm and plain, like a flatmate who cooks. No slang, no emojis, no exclamation marks, no filler like "delicious" or "perfect".
 - Language: write "why" in the language given in "language", in its native script, mixing in a few common English words the way people really talk (Hindi example: "Rohan की पसंद, और सब कुछ pantry में है."). If the language is English, write plain English. Examples in English: "Rohan's favourite, and everything is already in the kitchen." / "Ready in 20 minutes, light on the stomach."`;
 
 const optSchema = {
   type: 'object', additionalProperties: false, required: ['dish', 'emoji', 'why', 'minutes', 'missing'],
-  properties: { dish: { type: 'string' }, emoji: { type: 'string' }, why: { type: 'string' }, minutes: { type: 'integer' }, missing: { type: 'array', items: { type: 'string' } } },
+  properties: { dish: { type: 'string' }, emoji: { type: 'string', enum: DISH_EMOJI }, why: { type: 'string' }, minutes: { type: 'integer' }, missing: { type: 'array', items: { type: 'string' } } },
 };
 
 async function ask(meals, avoid = []) {
@@ -336,7 +337,7 @@ function cartView() {
     `<div class="empty"><div class="big-e">${any ? '🎉' : '🥡'}</div><h3>${any ? t('cart.none.t') : t('cart.empty.t')}</h3><p class="sub">${any ? t('cart.none.s') : t('cart.empty.s')}</p></div>`}</section>`;
 }
 
-const houseView = () => `${peopleSec()}${houseSec()}${keySec()}${langSec()}${themeSec()}<section class="sec"><button class="btn ghost danger" data-act="reset">${t('reset.btn')}</button></section>`;
+const houseView = () => `${peopleSec()}${houseSec()}${keySec()}${langSec()}${themeSec()}<section class="sec"><button class="btn ghost danger" data-act="reset">${t('reset.btn')}</button></section><p class="credit">Emoji art: <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener">Twemoji</a> (CC-BY 4.0)</p>`;
 
 const TABS = [['today', '🍽️', 'tab.today'], ['pantry', '🧺', 'tab.pantry'], ['cart', '🛒', 'tab.order'], ['house', '🏠', 'tab.house']];
 const tabs = () => TABS.map(([v, e, k]) => `<button class="${ui.view === v ? 'on' : ''}" data-act="go" data-v="${v}" aria-label="${esc(t(k))}"><b>${e}</b>${t(k)}${v === 'cart' && cartItems().length ? `<span class="badge">${cartItems().length}</span>` : ''}</button>`).join('');

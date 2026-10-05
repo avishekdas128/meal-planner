@@ -1,8 +1,14 @@
-const CACHE = 'kkb-v15';
-const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'data.js', 'i18n.js', 'theme-boot.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'lang/en.js', 'lang/hi.js', 'lang/bn.js', 'lang/mr.js', 'lang/te.js', 'lang/ta.js', 'lang/gu.js', 'lang/kn.js', 'manifest.webmanifest', 'icon.svg'];
+const CACHE = 'kkb-v17';
+const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'data.js', 'i18n.js', 'emoji.js', 'theme-boot.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'lang/en.js', 'lang/hi.js', 'lang/bn.js', 'lang/mr.js', 'lang/te.js', 'lang/ta.js', 'lang/gu.js', 'lang/kn.js', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await c.addAll(SHELL);
+    // the bundled emoji (~120 tiny SVGs) are precached best-effort so the first offline visit is complete too
+    try { const list = await (await fetch('emoji/list.json')).json(); await c.addAll(list.map(f => 'emoji/' + f)); } catch { /* runtime caching picks them up */ }
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', e => {
