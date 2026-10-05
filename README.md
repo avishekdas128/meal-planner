@@ -44,12 +44,25 @@ It's a PWA built for phones. There is no backend and no build step, just static 
 
 | Provider | Cost | Default model | Get a key |
 |---|---|---|---|
-| **Google Gemini** (default) | free tier | `gemini-2.5-flash` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| **Google Gemini** (default) | free tier | `gemini-3.8-flash` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
 | **Groq** | free plan | `openai/gpt-oss-20b` | [console.groq.com/keys](https://console.groq.com/keys) |
 | **OpenRouter** | free models (50 requests/day without credits) | `openrouter/free` | [openrouter.ai/keys](https://openrouter.ai/keys) |
 | **Claude** | pay as you go | `claude-sonnet-5-5` | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
 
-Each provider keeps its own key, and you can override the model name in **House → AI provider** (free model names change often). Free-tier limits are set by the providers and can change; if you hit one the app says so and suggests switching.
+Each provider keeps its own key, and you can override the model name in **House → AI provider**. Free-tier limits are set by the providers and can change; if you hit one the app says so and suggests switching.
+
+**Gemini specifics.** The app uses Google's [Interactions API](https://ai.google.dev/gemini-api/docs/get-started) (`POST /v1beta/interactions`) with the key in the `x-goog-api-key` header, a JSON-schema `response_format`, and `thinking_level: "low"` to keep answers fast. If a key can't use that endpoint it falls back to the older `generateContent` endpoint.
+
+**Models get retired, and the app copes.** Free-tier model names change quickly (`gemini-2.5-flash` stopped working for new keys). If Gemini answers that the model is gone or unavailable, the app asks the user's own key which models it can see ([`ListModels`](https://ai.google.dev/api/models)), picks the newest stable `gemini-N.M-flash` (never `-lite`, `-preview`, `-tts`, `-image`), retries once, and remembers it in **House → AI provider → Model**. If that also fails you'll see Google's own message; set a model by hand from [Google's model list](https://ai.google.dev/gemini-api/docs/models).
+
+**Troubleshooting**
+
+| You see | What it means |
+|---|---|
+| *The AI did not accept that key* | Wrong provider selected for that key, or a typo. Each provider has its own key (check the chips in **House**). |
+| *Free limit reached for now* | You hit the provider's per-minute or per-day free quota. Wait a minute, try tomorrow, or switch provider. |
+| *This model … is no longer available* | The model was retired and no newer one was found. Pick another in **House → Model**. |
+| *The AI sent back something unreadable* | A free model ignored the format. Tap **Plan again**, or try another provider. |
 
 **Adding a provider:** add it to `PROVIDERS` and `adapters` in [`public/providers.js`](public/providers.js) (anything OpenAI-compatible is a few lines, see `groq`), allow its host in `connect-src` in [`public/_headers`](public/_headers), and run `npm run check:i18n`.
 

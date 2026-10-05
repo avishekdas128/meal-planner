@@ -150,7 +150,7 @@ async function ask(meals, avoid = []) {
   };
   let text;
   try {
-    text = await callProvider({ provider: S.provider, key: apiKey(), model: S.models[S.provider] || byId(S.provider).model, system: SYSTEM + shapeHint(meals), user: JSON.stringify(payload), schema });
+    text = await callProvider({ provider: S.provider, key: apiKey(), model: S.models[S.provider] || byId(S.provider).model, system: SYSTEM + shapeHint(meals), user: JSON.stringify(payload), schema, onModel: m => { S.models[S.provider] = m; save(); } });
   } catch (e) {
     if (!(e instanceof AiError)) throw e;
     throw new Error({ net: t('err.net'), key: t('err.key'), rate: t('err.rate'), stuck: t('err.stuck') }[e.kind] || e.detail || t('err.http', { s: e.status }));
