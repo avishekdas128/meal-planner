@@ -68,15 +68,15 @@ export default {
   'q.notes.ph': 'যেমন: deep fry নয়, রবিবার special, dinner হালকা',
 
   'q.pantry.t': 'এখন আপনার <em>রান্নাঘরে</em> কী আছে?', 'q.pantry.s': 'যা stock-এ আছে তাতে tap করুন। এক মিনিট লাগবে, আর প্রতিটা suggestion আরও ভালো হবে।',
-  'q.key.t': 'শেষ step: আপনার <em>Claude key</em>', 'q.key.s': 'এটাই suggestions চালায়। এটা শুধু এই device-এ থাকে আর শুধু Anthropic-এর কাছে যায়। console.anthropic.com থেকে নিন।', 'q.key.skip': 'পরে দেব',
+  'q.key.t': 'শেষ step: আপনার <em>AI key</em>', 'q.key.s': "একটা AI provider বেছে নিন আর তার key paste করুন। key শুধু এই device-এ থাকে আর শুধু ওই provider-এর কাছে যায়। Gemini আর Groq free।", 'q.key.skip': 'পরে দেব',
 
   'q.done.t': 'সব <em>তৈরি।</em>', 'done.p1': '{n} জন flatmate', 'done.pn': '{n} জন flatmate',
   'done.cook': '{skill}, সর্বোচ্চ {m} মিনিট', 'done.meals': 'দিনে {n}টা meal', 'done.pantry': 'Pantry-তে {n}টা জিনিস',
-  'done.keyok': 'Claude key save হয়েছে ✓', 'done.keyno': 'এখনও key নেই। House ট্যাবে যোগ করুন', 'done.cta': 'আজকের menu বানান ✨',
+  'done.keyok': 'AI key save হয়েছে ✓', 'done.keyno': 'এখনও key নেই। House ট্যাবে যোগ করুন', 'done.cta': 'আজকের menu বানান ✨',
 
   'greet.late': 'অনেক রাত পর্যন্ত জেগে?', 'greet.morning': 'শুভ সকাল', 'greet.afternoon': 'শুভ অপরাহ্ন', 'greet.evening': 'শুভ সন্ধ্যা', 'greet.night': 'শুভ রাত্রি',
   'today.hungry': 'খিদে পেয়েছে? 🍛', 'today.plan': '✨ আমার দিনটা plan করো', 'today.again': '🔄 আবার plan করুন',
-  'nudge.t': 'প্রায় হয়ে গেছে', 'nudge.s': 'আপনার Claude key দিন, তারপর আমরা meals plan করা শুরু করব।', 'nudge.btn': 'Key যোগ করুন',
+  'nudge.t': 'প্রায় হয়ে গেছে', 'nudge.s': 'আপনার AI key দিন, তারপর আমরা meals plan করা শুরু করব।', 'nudge.btn': 'Key যোগ করুন',
   'prog.n': '{b}টার মধ্যে {a}টা meal lock', 'prog.all': 'সব meals lock 🔒',
   'pill.locked': 'Lock ✓', 'btn.reroll': '🔄 আরও ideas', 'btn.cook': '📲 Cook-কে menu পাঠান',
   'tag.ready': '✅ রান্নার জন্য তৈরি', 'tag.need': '🛒 লাগবে: {items}',
@@ -96,7 +96,7 @@ export default {
   'house.t': 'রান্নাঘরের নিয়ম 🍳', 'house.s': 'Plan-কে আপনার cook-এর জন্য realistic রাখে।',
   'h.skill': 'Cook-এর হাতের কাজ', 'h.meals': 'কোন meals রান্না হয়', 'h.time': 'সর্বোচ্চ সময়', 'h.budget': 'Budget mood', 'h.repeat': 'Repeat-এর ছাড়', 'h.veg': 'Veg-only দিন', 'h.notes': 'অন্যান্য notes',
   'h.notes.ph': 'যেমন: deep fry নয়, dinner হালকা, রবিবার = special',
-  'key.s': 'শুধু এই device-এ থাকে আর শুধু Anthropic-এর কাছে যায়। console.anthropic.com থেকে নিন।',
+  'key.s': "শুধু এই device-এ থাকে আর শুধু বেছে নেওয়া provider-এর কাছে যায়।",
   'theme.t': 'চেহারা 🎨',
   'lang.sec': 'ভাষা 🌐',
   'reset.btn': '🗑 সব reset করুন', 'reset.confirm': 'এই device থেকে সব flatmates, pantry, history আর আপনার key delete করবেন? এটা আর ফেরানো যাবে না।',
@@ -109,9 +109,9 @@ export default {
   'pantry.all': '✅ সব বাছুন', 'pantry.none': 'সব সরান', 'pantry.add': '➕ কিছু বাদ পড়েছে? লিখুন + Enter', 'pantry.extras': 'আপনার extras',
   'cat.grains': 'চাল-আটা', 'cat.dals': 'ডাল ও beans', 'cat.sabzi': 'সবজি', 'cat.masala': 'মশলা ও basics',
 
-  'err.nokey': 'আগে House ট্যাবে আপনার Claude key দিন 🔑', 'err.net': 'Claude-এর কাছে পৌঁছানো গেল না। Internet দেখে আবার চেষ্টা করুন 📡',
-  'err.key': 'Claude ওই key নেয়নি। House ট্যাবে দেখে নিন 🔑', 'err.http': 'Claude-এ সমস্যা হয়েছে (error {s})। একটু পরে আবার চেষ্টা করুন।',
-  'err.stuck': 'Claude ওই plan শেষ করতে পারেনি। আবার Plan চাপুন 🔄', 'err.parse': 'Claude এমন উত্তর পাঠিয়েছে যা বোঝা যাচ্ছে না। আবার Plan চাপুন 🔄',
+  'err.nokey': 'আগে House ট্যাবে আপনার AI key দিন 🔑', 'err.net': 'AI-এর কাছে পৌঁছানো গেল না। Internet দেখে আবার চেষ্টা করুন 📡',
+  'err.key': 'AI ওই key নেয়নি। House ট্যাবে দেখে নিন 🔑', 'err.http': 'AI-এ সমস্যা হয়েছে (error {s})। একটু পরে আবার চেষ্টা করুন।',
+  'err.stuck': 'AI ওই plan শেষ করতে পারেনি। আবার Plan চাপুন 🔄', 'err.parse': 'AI এমন উত্তর পাঠিয়েছে যা বোঝা যাচ্ছে না। আবার Plan চাপুন 🔄',
   'err.storage': 'এই device-এ save করা গেল না। হয়তো browser storage block করছে।',
 
   'load.1': 'Pantry-তে কী আছে দেখছি… 🧺', 'load.2': 'প্রত্যেক মাসিমাকে তাঁর recipe জিজ্ঞেস করছি… 👵', 'load.3': 'সবার পছন্দ মিলিয়ে dish বাছছি… 🍽️',
@@ -134,4 +134,13 @@ export default {
   'sec.kitchen': "আপনার রান্নাঘর",
   'sec.setup': "Setup",
   'chips.more': "আরও +{n}", 'chips.less': "কম দেখান",
+
+  // AI providers
+  'prov.t': "AI provider 🤖",
+  'prov.s': "কোন AI suggestions বানায়। Gemini আর Groq-এর key free।",
+  'prov.free': "Free",
+  'prov.get': "Free key নিন →",
+  'prov.getpaid': "Key নিন →",
+  'prov.model': "Model",
+  'err.rate': "এখনকার free limit শেষ। এক মিনিট অপেক্ষা করে আবার চেষ্টা করুন, বা House ট্যাবে provider বদলান ⏳",
 };

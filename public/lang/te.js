@@ -68,15 +68,15 @@ export default {
   'q.notes.ph': 'ఉదా: deep fry వద్దు, ఆదివారం special, dinner తేలికగా',
 
   'q.pantry.t': 'ఇప్పుడు మీ <em>వంటగదిలో</em> ఏం ఉన్నాయి?', 'q.pantry.s': 'Stock లో ఉన్నవాటిని tap చేయండి. ఒక్క నిమిషం చాలు, ప్రతి suggestion మెరుగవుతుంది.',
-  'q.key.t': 'చివరి step: మీ <em>Claude key</em>', 'q.key.s': 'Suggestions దీనితోనే నడుస్తాయి. ఇది ఈ device లోనే ఉంటుంది, Anthropic కి మాత్రమే వెళ్తుంది. console.anthropic.com లో తీసుకోండి.', 'q.key.skip': 'తర్వాత పెడతాను',
+  'q.key.t': 'చివరి step: మీ <em>AI key</em>', 'q.key.s': "ఒక AI provider ని ఎంచుకుని దాని key ని paste చేయండి. key ఈ device లోనే ఉంటుంది, ఆ provider కి మాత్రమే వెళ్తుంది. Gemini, Groq free.", 'q.key.skip': 'తర్వాత పెడతాను',
 
   'q.done.t': 'అంతా <em>సిద్ధం.</em>', 'done.p1': '{n} flatmate', 'done.pn': '{n} flatmates',
   'done.cook': '{skill}, గరిష్టంగా {m} నిమిషాలు', 'done.meals': 'రోజుకి {n} meals', 'done.pantry': 'Pantry లో {n} వస్తువులు',
-  'done.keyok': 'Claude key save అయింది ✓', 'done.keyno': 'ఇంకా key లేదు. House ట్యాబ్‌లో చేర్చండి', 'done.cta': 'ఈరోజు menu తయారు చేయండి ✨',
+  'done.keyok': 'AI key save అయింది ✓', 'done.keyno': 'ఇంకా key లేదు. House ట్యాబ్‌లో చేర్చండి', 'done.cta': 'ఈరోజు menu తయారు చేయండి ✨',
 
   'greet.late': 'ఇంకా మేలుకునే ఉన్నారా?', 'greet.morning': 'శుభోదయం', 'greet.afternoon': 'నమస్కారం', 'greet.evening': 'శుభ సాయంత్రం', 'greet.night': 'శుభ రాత్రి',
   'today.hungry': 'ఆకలేస్తోందా? 🍛', 'today.plan': '✨ నా రోజును plan చేయి', 'today.again': '🔄 మళ్ళీ plan చేయండి',
-  'nudge.t': 'దాదాపు అయిపోయింది', 'nudge.s': 'మీ Claude key పెట్టండి, అప్పుడు meals plan చేయడం మొదలుపెడతాం.', 'nudge.btn': 'Key చేర్చండి',
+  'nudge.t': 'దాదాపు అయిపోయింది', 'nudge.s': 'మీ AI key పెట్టండి, అప్పుడు meals plan చేయడం మొదలుపెడతాం.', 'nudge.btn': 'Key చేర్చండి',
   'prog.n': '{b} లో {a} meals lock', 'prog.all': 'అన్ని meals lock 🔒',
   'pill.locked': 'Lock ✓', 'btn.reroll': '🔄 ఇంకా ideas', 'btn.cook': '📲 Cook కి menu పంపండి',
   'tag.ready': '✅ వండడానికి సిద్ధం', 'tag.need': '🛒 కావాలి: {items}',
@@ -96,7 +96,7 @@ export default {
   'house.t': 'వంటగది నియమాలు 🍳', 'house.s': 'Plan ని మీ cook కి realistic గా ఉంచుతుంది.',
   'h.skill': 'Cook నైపుణ్యం', 'h.meals': 'ఏ meals వండుతారు', 'h.time': 'గరిష్ట సమయం', 'h.budget': 'Budget mood', 'h.repeat': 'Repeat అనుమతి', 'h.veg': 'Veg-only రోజులు', 'h.notes': 'ఇతర notes',
   'h.notes.ph': 'ఉదా: deep fry వద్దు, dinner తేలికగా, ఆదివారం = special',
-  'key.s': 'ఈ device లోనే ఉంటుంది, Anthropic కి మాత్రమే వెళ్తుంది. console.anthropic.com లో తీసుకోండి.',
+  'key.s': "ఈ device లోనే ఉంటుంది, మీరు ఎంచుకున్న provider కి మాత్రమే వెళ్తుంది.",
   'theme.t': 'రూపం 🎨',
   'lang.sec': 'భాష 🌐',
   'reset.btn': '🗑 అన్నీ reset చేయండి', 'reset.confirm': 'ఈ device నుండి అన్ని flatmates, pantry, history, మీ key ని delete చేయాలా? దీన్ని వెనక్కి తీసుకురాలేరు.',
@@ -109,9 +109,9 @@ export default {
   'pantry.all': '✅ అన్నీ ఎంచుకోండి', 'pantry.none': 'అన్నీ తీసేయండి', 'pantry.add': '➕ ఏమైనా మిస్ అయిందా? రాయండి + Enter', 'pantry.extras': 'మీ extras',
   'cat.grains': 'ధాన్యాలు, పిండ్లు', 'cat.dals': 'పప్పులు, beans', 'cat.sabzi': 'కూరగాయలు', 'cat.masala': 'మసాలాలు, basics',
 
-  'err.nokey': 'ముందు House ట్యాబ్‌లో మీ Claude key పెట్టండి 🔑', 'err.net': 'Claude ని చేరుకోలేకపోయాం. Internet చూసి మళ్ళీ ప్రయత్నించండి 📡',
-  'err.key': 'Claude ఆ key ని అంగీకరించలేదు. House ట్యాబ్‌లో చూడండి 🔑', 'err.http': 'Claude లో సమస్య వచ్చింది (error {s}). కాసేపటి తర్వాత మళ్ళీ ప్రయత్నించండి.',
-  'err.stuck': 'Claude ఆ plan పూర్తి చేయలేకపోయింది. మళ్ళీ Plan నొక్కండి 🔄', 'err.parse': 'Claude అర్థం కాని సమాధానం పంపింది. మళ్ళీ Plan నొక్కండి 🔄',
+  'err.nokey': 'ముందు House ట్యాబ్‌లో మీ AI key పెట్టండి 🔑', 'err.net': 'AI ని చేరుకోలేకపోయాం. Internet చూసి మళ్ళీ ప్రయత్నించండి 📡',
+  'err.key': 'AI ఆ key ని అంగీకరించలేదు. House ట్యాబ్‌లో చూడండి 🔑', 'err.http': 'AI లో సమస్య వచ్చింది (error {s}). కాసేపటి తర్వాత మళ్ళీ ప్రయత్నించండి.',
+  'err.stuck': 'AI ఆ plan పూర్తి చేయలేకపోయింది. మళ్ళీ Plan నొక్కండి 🔄', 'err.parse': 'AI అర్థం కాని సమాధానం పంపింది. మళ్ళీ Plan నొక్కండి 🔄',
   'err.storage': 'ఈ device లో save చేయలేకపోయాం. Browser storage ని block చేస్తుండవచ్చు.',
 
   'load.1': 'Pantry లో ఏముందో చూస్తున్నాం… 🧺', 'load.2': 'ప్రతి ఆంటీని వాళ్ళ recipe అడుగుతున్నాం… 👵', 'load.3': 'అందరి ఇష్టాలకు dishes సరిచూస్తున్నాం… 🍽️',
@@ -134,4 +134,13 @@ export default {
   'sec.kitchen': "మీ వంటగది",
   'sec.setup': "Setup",
   'chips.more': "ఇంకా +{n}", 'chips.less': "తక్కువ చూపు",
+
+  // AI providers
+  'prov.t': "AI provider 🤖",
+  'prov.s': "ఏ AI suggestions ఇస్తుంది. Gemini, Groq key లు free.",
+  'prov.free': "Free",
+  'prov.get': "Free key తీసుకోండి →",
+  'prov.getpaid': "Key తీసుకోండి →",
+  'prov.model': "Model",
+  'err.rate': "ప్రస్తుతానికి free limit అయిపోయింది. ఒక నిమిషం ఆగి మళ్ళీ ప్రయత్నించండి, లేదా House ట్యాబ్‌లో provider మార్చండి ⏳",
 };

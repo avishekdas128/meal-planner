@@ -68,15 +68,15 @@ export default {
   'q.notes.ph': 'எ.கா: deep fry வேண்டாம், ஞாயிறு special, dinner லேசாக',
 
   'q.pantry.t': 'இப்போது உங்கள் <em>சமையலறையில்</em> என்ன இருக்கிறது?', 'q.pantry.s': 'Stock-ல் இருப்பதைத் தொடுங்கள். ஒரு நிமிடம் போதும், ஒவ்வொரு suggestion-ம் சிறப்பாகும்.',
-  'q.key.t': 'கடைசி step: உங்கள் <em>Claude key</em>', 'q.key.s': 'Suggestions இதனால்தான் இயங்குகின்றன. இது இந்த device-லேயே இருக்கும், Anthropic-க்கு மட்டுமே போகும். console.anthropic.com-ல் பெறுங்கள்.', 'q.key.skip': 'அப்புறம் போடுகிறேன்',
+  'q.key.t': 'கடைசி step: உங்கள் <em>AI key</em>', 'q.key.s': "ஒரு AI provider-ஐத் தேர்ந்தெடுத்து அதன் key-ஐ paste செய்யுங்கள். key இந்த device-லேயே இருக்கும், அந்த provider-க்கு மட்டுமே போகும். Gemini, Groq free.", 'q.key.skip': 'அப்புறம் போடுகிறேன்',
 
   'q.done.t': 'எல்லாம் <em>ரெடி.</em>', 'done.p1': '{n} flatmate', 'done.pn': '{n} flatmates',
   'done.cook': '{skill}, அதிகபட்சம் {m} நிமிடம்', 'done.meals': 'நாளுக்கு {n} meals', 'done.pantry': 'Pantry-ல் {n} பொருட்கள்',
-  'done.keyok': 'Claude key save ஆகிவிட்டது ✓', 'done.keyno': 'இன்னும் key இல்லை. House tab-ல் சேர்க்கவும்', 'done.cta': 'இன்றைய menu-வை உருவாக்கு ✨',
+  'done.keyok': 'AI key save ஆகிவிட்டது ✓', 'done.keyno': 'இன்னும் key இல்லை. House tab-ல் சேர்க்கவும்', 'done.cta': 'இன்றைய menu-வை உருவாக்கு ✨',
 
   'greet.late': 'இன்னும் தூங்கலையா?', 'greet.morning': 'காலை வணக்கம்', 'greet.afternoon': 'மதிய வணக்கம்', 'greet.evening': 'மாலை வணக்கம்', 'greet.night': 'இனிய இரவு',
   'today.hungry': 'பசிக்குதா? 🍛', 'today.plan': '✨ என் நாளை plan பண்ணு', 'today.again': '🔄 மீண்டும் plan செய்',
-  'nudge.t': 'கிட்டத்தட்ட முடிந்தது', 'nudge.s': 'உங்கள் Claude key-ஐ சேர்த்தால், meals plan செய்ய ஆரம்பிக்கலாம்.', 'nudge.btn': 'Key சேர்',
+  'nudge.t': 'கிட்டத்தட்ட முடிந்தது', 'nudge.s': 'உங்கள் AI key-ஐ சேர்த்தால், meals plan செய்ய ஆரம்பிக்கலாம்.', 'nudge.btn': 'Key சேர்',
   'prog.n': '{b}-ல் {a} meals lock', 'prog.all': 'எல்லா meals-உம் lock 🔒',
   'pill.locked': 'Lock ✓', 'btn.reroll': '🔄 இன்னும் ideas', 'btn.cook': '📲 Cook-க்கு menu அனுப்பு',
   'tag.ready': '✅ சமைக்கத் தயார்', 'tag.need': '🛒 வேண்டும்: {items}',
@@ -96,7 +96,7 @@ export default {
   'house.t': 'சமையலறை விதிகள் 🍳', 'house.s': 'Plan-ஐ உங்கள் cook-க்கு realistic ஆக வைக்கும்.',
   'h.skill': 'Cook திறமை', 'h.meals': 'எந்த meals சமைக்கிறார்', 'h.time': 'அதிகபட்ச நேரம்', 'h.budget': 'Budget mood', 'h.repeat': 'Repeat அனுமதி', 'h.veg': 'Veg-only நாட்கள்', 'h.notes': 'மற்ற notes',
   'h.notes.ph': 'எ.கா: deep fry வேண்டாம், dinner லேசாக, ஞாயிறு = special',
-  'key.s': 'இந்த device-லேயே இருக்கும், Anthropic-க்கு மட்டுமே போகும். console.anthropic.com-ல் பெறுங்கள்.',
+  'key.s': "இந்த device-லேயே இருக்கும், நீங்கள் தேர்ந்தெடுத்த provider-க்கு மட்டுமே போகும்.",
   'theme.t': 'தோற்றம் 🎨',
   'lang.sec': 'மொழி 🌐',
   'reset.btn': '🗑 எல்லாவற்றையும் reset செய்', 'reset.confirm': 'இந்த device-லிருந்து எல்லா flatmates, pantry, history, உங்கள் key-ஐ delete செய்யவா? இதைத் திரும்பப் பெற முடியாது.',
@@ -109,9 +109,9 @@ export default {
   'pantry.all': '✅ எல்லாம் தேர்ந்தெடு', 'pantry.none': 'எல்லாம் நீக்கு', 'pantry.add': '➕ ஏதாவது விடுபட்டதா? எழுதுங்கள் + Enter', 'pantry.extras': 'உங்கள் extras',
   'cat.grains': 'தானியங்கள், மாவு', 'cat.dals': 'பருப்புகள், beans', 'cat.sabzi': 'காய்கறிகள்', 'cat.masala': 'மசாலா, basics',
 
-  'err.nokey': 'முதலில் House tab-ல் உங்கள் Claude key-ஐ சேருங்கள் 🔑', 'err.net': 'Claude-ஐ அடைய முடியவில்லை. Internet-ஐப் பார்த்து மீண்டும் முயற்சிக்கவும் 📡',
-  'err.key': 'Claude அந்த key-ஐ ஏற்கவில்லை. House tab-ல் சரிபாருங்கள் 🔑', 'err.http': 'Claude-ல் பிரச்சனை (error {s}). சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.',
-  'err.stuck': 'Claude அந்த plan-ஐ முடிக்க முடியவில்லை. மீண்டும் Plan-ஐ அழுத்துங்கள் 🔄', 'err.parse': 'Claude புரியாத பதிலை அனுப்பியது. மீண்டும் Plan-ஐ அழுத்துங்கள் 🔄',
+  'err.nokey': 'முதலில் House tab-ல் உங்கள் AI key-ஐ சேருங்கள் 🔑', 'err.net': 'AI-ஐ அடைய முடியவில்லை. Internet-ஐப் பார்த்து மீண்டும் முயற்சிக்கவும் 📡',
+  'err.key': 'AI அந்த key-ஐ ஏற்கவில்லை. House tab-ல் சரிபாருங்கள் 🔑', 'err.http': 'AI-ல் பிரச்சனை (error {s}). சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்.',
+  'err.stuck': 'AI அந்த plan-ஐ முடிக்க முடியவில்லை. மீண்டும் Plan-ஐ அழுத்துங்கள் 🔄', 'err.parse': 'AI புரியாத பதிலை அனுப்பியது. மீண்டும் Plan-ஐ அழுத்துங்கள் 🔄',
   'err.storage': 'இந்த device-ல் save செய்ய முடியவில்லை. Browser storage-ஐத் தடுக்கிறதோ என்னவோ.',
 
   'load.1': 'Pantry-ல் என்ன இருக்கு என்று பார்க்கிறோம்… 🧺', 'load.2': 'ஒவ்வொரு ஆன்ட்டியிடமும் recipe கேட்கிறோம்… 👵', 'load.3': 'எல்லோர் விருப்பத்துக்கும் dishes பொருத்துகிறோம்… 🍽️',
@@ -134,4 +134,13 @@ export default {
   'sec.kitchen': "உங்கள் சமையலறை",
   'sec.setup': "Setup",
   'chips.more': "மேலும் +{n}", 'chips.less': "குறைவாகக் காட்டு",
+
+  // AI providers
+  'prov.t': "AI provider 🤖",
+  'prov.s': "எந்த AI suggestions தருகிறது. Gemini, Groq key-கள் free.",
+  'prov.free': "Free",
+  'prov.get': "Free key பெறுங்கள் →",
+  'prov.getpaid': "Key பெறுங்கள் →",
+  'prov.model': "Model",
+  'err.rate': "இப்போதைக்கு free limit முடிந்துவிட்டது. ஒரு நிமிடம் காத்திருந்து மீண்டும் முயற்சிக்கவும், அல்லது House tab-ல் provider-ஐ மாற்றவும் ⏳",
 };

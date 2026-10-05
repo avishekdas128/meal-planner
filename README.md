@@ -2,7 +2,7 @@
 
 **An AI meal planner for flats with a cook.** Tell it who lives in the flat, what everyone eats and what's in the kitchen, and it tells you what the cook should make today, what can be cooked *right now*, and what needs to be ordered. It then writes the message for the cook.
 
-It's a PWA built for phones. There is no backend and no build step, just static files and a Claude API key that stays on your device.
+It's a PWA built for phones. There is no backend and no build step, just static files and an AI key that stays on your device. **Free keys work** (Google Gemini, Groq, OpenRouter), and Claude is supported too.
 
 **Live:** https://meal-planner.avishekdas128.workers.dev
 
@@ -16,7 +16,7 @@ It's a PWA built for phones. There is no backend and no build step, just static 
 
 ## Features
 
-- **Daily plan from Claude.** Three options per meal, each tagged ✅ *Ready to cook* or 🛒 *Need: paneer, palak*. Lock one and it's added to the history, so tomorrow's plan avoids repeats. 👍/👎 steers future picks.
+- **Daily plan from an AI of your choice.** Three options per meal, each tagged ✅ *Ready to cook* or 🛒 *Need: paneer, palak*. Lock one and it's added to the history, so tomorrow's plan avoids repeats. 👍/👎 steers future picks.
 - **Built for a whole flat.** Add every flatmate in one go. Each question then covers everyone: diet (veg, egg, non-veg, jain), spice, allergies, loves and hates, regional taste, health goals, breakfast style. Mixed diets are handled: shared dishes follow the strictest diet present.
 - **Kitchen rules.** Cook's skill, time per meal, budget, veg-only days, how often dishes may repeat.
 - **Pantry aware.** Tick what's in stock; missing items go to an order list. Mark one as bought and it moves into the pantry.
@@ -28,24 +28,37 @@ It's a PWA built for phones. There is no backend and no build step, just static 
 ## How it works
 
 ```
- phone (PWA)                                        Anthropic API
-┌────────────────────────┐   POST /v1/messages    ┌─────────────┐
-│ questionnaire → state  │ ─────────────────────▶ │ Claude      │
-│ pantry · history       │ ◀───────────────────── │ (JSON schema│
-│ localStorage           │   structured JSON       │  output)    │
-└────────────────────────┘                         └─────────────┘
+ phone (PWA)                                     the AI provider you picked
+┌────────────────────────┐   one HTTPS call     ┌──────────────────────────┐
+│ questionnaire → state  │ ───────────────────▶ │ Gemini · Groq · OpenRouter│
+│ pantry · history       │ ◀─────────────────── │ · Claude                  │
+│ localStorage           │   meal plan as JSON  └──────────────────────────┘
+└────────────────────────┘
 ```
 
-- The browser calls the Anthropic Messages API **directly**, with `output_config.format` (a JSON schema), so the reply is always valid, typed meal data.
-- All state (flatmates, pantry, history, your API key) lives in **`localStorage` on the device**. There is no account, no server and no analytics.
-- Model: `claude-sonnet-5-5` at low effort. Change `MODEL` in [`public/app.js`](public/app.js).
+- The browser calls the provider **directly** with the user's own key. A small adapter layer, [`public/providers.js`](public/providers.js), hides the differences, and `app.js` validates and normalises whatever comes back.
+- All state (flatmates, pantry, history, your keys) lives in **`localStorage` on the device**. There is no account, no server and no analytics.
+- The reply is constrained to a JSON schema where the provider supports it (Gemini, Claude). For the others the exact shape is spelled out in the prompt, and `normalise()` in `app.js` repairs small slips (missing fields, unknown emoji, numbers as text).
 
-### A note on the API key
+### AI providers
 
-Because there is no backend, each user pastes **their own Anthropic API key** (get one at [console.anthropic.com](https://console.anthropic.com)). It is sent only to `api.anthropic.com`, and the Content-Security-Policy in [`public/_headers`](public/_headers) blocks requests to anywhere else. Still:
+| Provider | Cost | Default model | Get a key |
+|---|---|---|---|
+| **Google Gemini** (default) | free tier | `gemini-2.5-flash` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
+| **Groq** | free plan | `openai/gpt-oss-20b` | [console.groq.com/keys](https://console.groq.com/keys) |
+| **OpenRouter** | free models (50 requests/day without credits) | `openrouter/free` | [openrouter.ai/keys](https://openrouter.ai/keys) |
+| **Claude** | pay as you go | `claude-sonnet-5-5` | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
 
-- Anyone with access to the device's browser storage can read the key. Use a key with a **spend limit** and don't use it on shared devices.
-- If you'd rather hand a flat a link without asking everyone for a key, put a small proxy (for example a Cloudflare Worker that holds the key) in front of the API and point `fetch` in `ask()` at it.
+Each provider keeps its own key, and you can override the model name in **House → AI provider** (free model names change often). Free-tier limits are set by the providers and can change; if you hit one the app says so and suggests switching.
+
+**Adding a provider:** add it to `PROVIDERS` and `adapters` in [`public/providers.js`](public/providers.js) (anything OpenAI-compatible is a few lines, see `groq`), allow its host in `connect-src` in [`public/_headers`](public/_headers), and run `npm run check:i18n`.
+
+### A note on API keys
+
+Because there is no backend, each user pastes **their own key**. It is sent only to the provider they chose, and the Content-Security-Policy in [`public/_headers`](public/_headers) blocks requests to any other host. Still:
+
+- Anyone with access to the device's browser storage can read the key. Prefer a key with a **spend limit** (or a free-tier key) and don't use it on shared devices.
+- If you'd rather hand a flat a link without asking everyone for a key, put a small proxy (for example a Cloudflare Worker that holds one key) in front of the provider and point `callProvider` at it.
 
 ## Run it locally
 
@@ -83,7 +96,9 @@ After the first deploy, open the site on your phone and check **DevTools → App
 ```
 public/                 the entire site (this is what gets deployed)
   index.html            shell: one <main>, tab bar, dialog
-  app.js                state, questionnaire, rendering, Claude call
+  app.js                state, questionnaire, rendering, plan logic
+  providers.js          AI provider adapters (Gemini, Groq, OpenRouter, Claude)
+  emoji.js              swaps emoji for bundled SVGs
   i18n.js               language loading, per-script fonts, dates
   data.js               dishes, pantry items, constants
   styles.css            design tokens, light/dark, components

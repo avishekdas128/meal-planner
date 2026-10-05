@@ -68,15 +68,15 @@ export default {
   'q.notes.ph': 'e.g. no deep fry, Sunday is special, keep dinners light',
 
   'q.pantry.t': "What's in your <em>kitchen</em> right now?", 'q.pantry.s': 'Tap what is in stock. It takes a minute and makes every suggestion smarter.',
-  'q.key.t': 'Last step: your <em>Claude key</em>', 'q.key.s': 'This powers the suggestions. It stays on this device and goes only to Anthropic. Get one at console.anthropic.com.', 'q.key.skip': "I'll add it later",
+  'q.key.t': "Last step: your <em>AI key</em>", 'q.key.s': "Pick an AI provider and paste its key. The key stays on this device and goes only to that provider. Gemini and Groq are free.", 'q.key.skip': "I'll add it later",
 
   'q.done.t': "You're <em>all set.</em>", 'done.p1': '{n} flatmate', 'done.pn': '{n} flatmates',
   'done.cook': '{skill}, up to {m} min', 'done.meals': '{n} meals a day', 'done.pantry': '{n} items in the pantry',
-  'done.keyok': 'Claude key saved ✓', 'done.keyno': 'No key yet. Add it in the House tab', 'done.cta': "Plan today's menu ✨",
+  'done.keyok': "AI key saved ✓", 'done.keyno': 'No key yet. Add it in the House tab', 'done.cta': "Plan today's menu ✨",
 
   'greet.late': 'Up late?', 'greet.morning': 'Good morning', 'greet.afternoon': 'Good afternoon', 'greet.evening': 'Good evening', 'greet.night': 'Good night',
   'today.hungry': 'hungry? 🍛', 'today.plan': '✨ Plan my day', 'today.again': '🔄 Plan again',
-  'nudge.t': 'Almost there', 'nudge.s': 'Add your Claude key and we can start planning meals.', 'nudge.btn': 'Add key',
+  'nudge.t': 'Almost there', 'nudge.s': "Add your AI key and we can start planning meals.", 'nudge.btn': 'Add key',
   'prog.n': '{a} of {b} meals locked', 'prog.all': 'All meals locked 🔒',
   'pill.locked': 'Locked ✓', 'btn.reroll': '🔄 Different ideas', 'btn.cook': '📲 Send menu to the cook',
   'tag.ready': '✅ Ready to cook', 'tag.need': '🛒 Need: {items}',
@@ -97,7 +97,7 @@ export default {
   'house.t': 'Kitchen rules 🍳', 'house.s': 'Keeps the plan realistic for your cook.',
   'h.skill': "Cook's skill", 'h.meals': 'Meals cooked', 'h.time': 'Max cooking time', 'h.budget': 'Budget mood', 'h.repeat': 'Repeats allowed', 'h.veg': 'Veg-only days', 'h.notes': 'Other notes',
   'h.notes.ph': 'e.g. no deep fry, keep dinners light, Sunday = special',
-  'key.t': 'Claude key 🔑', 'key.s': 'Stored only on this device and sent only to Anthropic. Get one at console.anthropic.com.',
+  'key.t': "AI key 🔑", 'key.s': "Stored only on this device and sent only to the provider you picked.",
   'theme.t': 'Appearance 🎨', 'theme.dark': '🌙 Dark', 'theme.light': '☀️ Light', 'theme.auto': '🌓 Auto',
   'lang.sec': 'Language 🌐',
   'reset.btn': '🗑 Reset everything', 'reset.confirm': 'Delete all flatmates, pantry, history and your key from this device? This cannot be undone.',
@@ -110,9 +110,9 @@ export default {
   'pantry.all': '✅ Select all', 'pantry.none': 'Clear all', 'pantry.add': '➕ Something missing? Type it + Enter', 'pantry.extras': 'Your extras',
   'cat.grains': 'Grains & flours', 'cat.dals': 'Dals & beans', 'cat.sabzi': 'Sabzi', 'cat.dairy': 'Dairy', 'cat.protein': 'Protein', 'cat.masala': 'Masala & basics', 'cat.misc': 'Misc',
 
-  'err.nokey': 'Add your Claude key in the House tab first 🔑', 'err.net': 'Could not reach Claude. Check your internet and try again 📡',
-  'err.key': 'Claude did not accept that key. Check it in the House tab 🔑', 'err.http': 'Claude had a problem (error {s}). Try again in a moment.',
-  'err.stuck': 'Claude could not finish that plan. Tap Plan again 🔄', 'err.parse': 'Claude sent back something unreadable. Tap Plan again 🔄',
+  'err.nokey': "Add your AI key in the House tab first 🔑", 'err.net': "Could not reach the AI. Check your internet and try again 📡",
+  'err.key': "The AI did not accept that key. Check it in the House tab 🔑", 'err.http': "The AI had a problem (error {s}). Try again in a moment.",
+  'err.stuck': "The AI could not finish that plan. Tap Plan again 🔄", 'err.parse': "The AI sent back something unreadable. Tap Plan again 🔄",
   'err.storage': 'Could not save on this device. Your browser may be blocking storage.',
 
   'load.1': 'Checking what is in your pantry… 🧺', 'load.2': 'Asking every aunty for her recipe… 👵', 'load.3': "Matching dishes to everyone's taste… 🍽️",
@@ -136,4 +136,13 @@ export default {
   'sec.kitchen': "Your kitchen",
   'sec.setup': "Setup",
   'chips.more': "+{n} more", 'chips.less': "Show less",
+
+  // AI providers
+  'prov.t': "AI provider 🤖",
+  'prov.s': "Which AI makes the suggestions. Gemini and Groq offer free keys.",
+  'prov.free': "Free",
+  'prov.get': "Get a free key →",
+  'prov.getpaid': "Get a key →",
+  'prov.model': "Model",
+  'err.rate': "Free limit reached for now. Wait a minute and try again, or switch provider in the House tab ⏳",
 };

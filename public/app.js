@@ -1,8 +1,8 @@
 import { DAYS, AVATARS, ALLERGIES, REGIONS, dishesFor, PANTRY, STAPLES, DISH_EMOJI } from './data.js';
 import './emoji.js'; // swaps every emoji for a bundled SVG so it looks the same on every phone
 import { LANGS, WORDS, t, lang, setLang, loadWordFonts, fontOf, weightOf, dayLabel, dateLabel } from './i18n.js';
+import { PROVIDERS, byId, callProvider, AiError } from './providers.js';
 
-const MODEL = 'claude-sonnet-5-5';
 const KEY = 'kkb:v1'; // localStorage, not cookies: prefs + pantry blow past the 4KB cookie cap
 const MEALS = { breakfast: '🍳', lunch: '🍛', dinner: '🌙' };
 const DIET_E = { veg: '🥦', egg: '🥚', nonveg: '🍗', jain: '🌿' };
@@ -20,12 +20,18 @@ const mealName = m => t('meal.' + m);
 const minLabel = n => (n === 60 ? t('unit.hour') : t('unit.min', { n }));
 
 const blank = () => ({
-  apiKey: '', done: false, theme: 'dark', lang: '',
+  provider: 'gemini', keys: {}, models: {}, done: false, theme: 'dark', lang: '',
   house: { skill: 'average', maxMin: 45, budget: 'normal', nvOff: [], notes: '', meals: ['breakfast', 'lunch', 'dinner'], repeat: 7 },
   people: [], inventory: Object.fromEntries(STAPLES.map(i => [i, true])), custom: [], history: [], plan: null,
 });
 let S;
-try { const b = blank(), l = JSON.parse(localStorage.getItem(KEY) || '{}'); S = { ...b, ...l, house: { ...b.house, ...l.house } }; } catch { S = blank(); }
+try {
+  const b = blank(), l = JSON.parse(localStorage.getItem(KEY) || '{}');
+  S = { ...b, ...l, house: { ...b.house, ...l.house }, keys: { ...l.keys }, models: { ...l.models } };
+  if (l.apiKey) { S.keys.anthropic ||= l.apiKey; if (!l.provider) S.provider = 'anthropic'; } // older versions only knew Claude
+  delete S.apiKey;
+} catch { S = blank(); }
+const apiKey = () => S.keys[S.provider] || '';
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { toast(t('err.storage')); } };
 const detectLang = () => { const c = (navigator.language || 'en').slice(0, 2); return LANGS.some(l => l.c === c) ? c : 'en'; };
 
@@ -89,7 +95,7 @@ function confetti(x = innerWidth / 2, y = innerHeight / 2, n = 40) {
   })();
 }
 
-/* ---------- Claude ---------- */
+/* ---------- AI ---------- */
 const SYSTEM = `You are the meal-planning brain for a flat of bachelors in an Indian city who have a cook. Suggest realistic Indian home-style dishes the cook can make.
 Rules:
 - Diets: if the squad is mixed, shared dishes must suit the strictest diet present (jain = no onion, garlic or root vegetables; veg = no meat/fish/egg; egg = veg + eggs). If there is a non-veg eater, you may offer non-veg options but note in "why" who it suits. If nonVegOffToday is true, no meat/fish/egg dishes today.
@@ -107,44 +113,50 @@ const optSchema = {
   properties: { dish: { type: 'string' }, emoji: { type: 'string', enum: DISH_EMOJI }, why: { type: 'string' }, minutes: { type: 'integer' }, missing: { type: 'array', items: { type: 'string' } } },
 };
 
+// providers without schema enforcement get the exact output shape spelled out in the prompt
+const shapeHint = meals => `\n\nOutput format: reply with ONE JSON object and nothing else (no markdown, no commentary): {"meals":{${meals.map(m => `"${m}":[{"dish":"…","emoji":"🍛","why":"…","minutes":25,"missing":["…"]}]`).join(',')}}}. Each meal has exactly 3 options. "emoji" must be exactly one of: ${DISH_EMOJI.join(' ')}. "minutes" is an integer.`;
+
+// models that ignore the schema still occasionally slip: coerce every option into the shape the UI relies on
+function normalise(raw, meals) {
+  const root = raw?.meals || raw, out = {};
+  for (const m of meals) {
+    const list = (Array.isArray(root?.[m]) ? root[m] : []).map(o => ({
+      dish: String(o?.dish || '').trim(),
+      emoji: DISH_EMOJI.includes(o?.emoji) ? o.emoji : '🍛',
+      why: String(o?.why || '').trim(),
+      minutes: Math.max(5, Math.round(+o?.minutes) || 30),
+      missing: (Array.isArray(o?.missing) ? o.missing : []).map(x => String(x).trim()).filter(Boolean),
+    })).filter(o => o.dish).slice(0, 3);
+    if (!list.length) throw new Error(t('err.parse'));
+    out[m] = list;
+  }
+  return out;
+}
+const parseJson = text => { const s = String(text || '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, ''); return JSON.parse(s.slice(s.indexOf('{'), s.lastIndexOf('}') + 1)); };
+
 async function ask(meals, avoid = []) {
-  if (!S.apiKey) throw new Error(t('err.nokey'));
+  if (!apiKey()) throw new Error(t('err.nokey'));
   const day = DAYS[new Date().getDay()];
   const payload = {
     today: day, language: lang().e, mealsToPlan: meals, alreadyShown: avoid,
     house: { cookSkill: S.house.skill, maxMinutes: S.house.maxMin, budget: S.house.budget, notes: S.house.notes, repeatEveryDays: S.house.repeat, nonVegOffToday: S.house.nvOff.includes(day) },
     people: S.people.map(({ emoji, ...p }) => p),
     pantry: Object.keys(S.inventory).filter(k => S.inventory[k]),
-    recentMeals: S.history.slice(-60),
+    recentMeals: S.history.slice(-40),
   };
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json', 'x-api-key': S.apiKey, 'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true', // required for browser CORS; key stays on this device
-    },
-    body: JSON.stringify({
-      model: MODEL, max_tokens: 4000, system: SYSTEM,
-      messages: [{ role: 'user', content: JSON.stringify(payload) }],
-      output_config: {
-        effort: 'low',
-        format: {
-          type: 'json_schema',
-          schema: {
-            type: 'object', additionalProperties: false, required: ['meals'],
-            properties: { meals: { type: 'object', additionalProperties: false, required: meals, properties: Object.fromEntries(meals.map(m => [m, { type: 'array', items: optSchema }])) } },
-          },
-        },
-      },
-    }),
-  }).catch(() => { throw new Error(t('err.net')); });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(res.status === 401 ? t('err.key') : data.error?.message || t('err.http', { s: res.status }));
-  if (data.stop_reason === 'refusal' || data.stop_reason === 'max_tokens') throw new Error(t('err.stuck'));
-  const text = data.content?.find(b => b.type === 'text')?.text;
-  let out; try { out = JSON.parse(text).meals; } catch { throw new Error(t('err.parse')); }
-  for (const m of meals) out[m] = (out[m] || []).map(o => ({ ...o, missing: (o.missing || []).map(x => x.trim()).filter(Boolean) }));
-  return out;
+  const schema = {
+    type: 'object', additionalProperties: false, required: ['meals'],
+    properties: { meals: { type: 'object', additionalProperties: false, required: meals, properties: Object.fromEntries(meals.map(m => [m, { type: 'array', items: optSchema }])) } },
+  };
+  let text;
+  try {
+    text = await callProvider({ provider: S.provider, key: apiKey(), model: S.models[S.provider] || byId(S.provider).model, system: SYSTEM + shapeHint(meals), user: JSON.stringify(payload), schema });
+  } catch (e) {
+    if (!(e instanceof AiError)) throw e;
+    throw new Error({ net: t('err.net'), key: t('err.key'), rate: t('err.rate'), stuck: t('err.stuck') }[e.kind] || e.detail || t('err.http', { s: e.status }));
+  }
+  let raw; try { raw = parseJson(text); } catch { throw new Error(t('err.parse')); }
+  return normalise(raw, meals);
 }
 
 const loadingLine = () => t('load.' + (1 + Math.random() * 6 | 0));
@@ -187,8 +199,11 @@ function houseSec() {
   <h3>${t('h.notes')}</h3><textarea class="cin" data-bind="notes" placeholder="${esc(t('h.notes.ph'))}">${esc(H.notes)}</textarea></section>`;
 }
 
-const keyField = () => `<input class="cin solid" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" aria-label="Claude API key" value="${esc(S.apiKey)}" data-bind="apiKey">`;
-const keySec = () => `<section class="sec"><h2>${t('key.t')}</h2><p class="sub">${t('key.s')}</p>${keyField()}</section>`;
+const provChips = () => `<div class="provs">${PROVIDERS.map(p => `<button class="prov ${S.provider === p.id ? 'on' : ''}" data-act="prov" data-v="${p.id}" aria-pressed="${S.provider === p.id}"><b>${p.name}</b>${p.free ? `<small class="freebadge">${t('prov.free')}</small>` : ''}</button>`).join('')}</div>`;
+const keyField = () => { const p = byId(S.provider); return `<input class="cin solid" type="password" autocomplete="off" spellcheck="false" placeholder="${esc(p.keyHint)}" aria-label="${esc(p.name)} API key" value="${esc(apiKey())}" data-bind="apiKey"><a class="getkey" href="${p.keyUrl}" target="_blank" rel="noopener">${t(p.free ? 'prov.get' : 'prov.getpaid')}</a>`; };
+const provBox = () => provChips() + keyField();
+const keySec = () => { const p = byId(S.provider); return `<section class="sec" id="aisec"><h2>${t('prov.t')}</h2><p class="sub">${t('prov.s')}</p>${provChips()}<h3>${t('key.t')}</h3>${keyField()}<p class="note">${t('key.s')}</p><h3>${t('prov.model')}</h3><input class="cin solid" data-bind="model" aria-label="${t('prov.model')}" placeholder="${esc(p.model)}" value="${esc(S.models[S.provider] || '')}" autocomplete="off" spellcheck="false"></section>`; };
+
 const themeSec = () => `<section class="sec"><h2>${t('theme.t')}</h2><div class="chips" style="margin-top:12px">${THEMES.map(k => chip('theme', `data-v="${k}"`, t('theme.' + k), S.theme === k)).join('')}</div></section>`;
 const langSec = () => `<section class="sec"><h2>${t('lang.sec')}</h2><div class="chips" style="margin-top:12px">${LANGS.map(l => `<button class="chip ${S.lang === l.c ? 'on' : ''}" lang="${l.c}" style="font-family:${fontOf(l)},'Mukta',sans-serif" data-act="lang" data-v="${l.c}">${l.n}</button>`).join('')}</div></section>`;
 
@@ -261,12 +276,12 @@ const STEP = {
   notes: () => ({ e: '📝', t: t('q.notes.t'), sub: t('q.notes.s'), skip: t('q.notes.skip'),
     body: `<textarea class="cin" style="margin:0" data-bind="notes" aria-label="${esc(t('h.notes'))}" placeholder="${esc(t('q.notes.ph'))}">${esc(S.house.notes)}</textarea>` }),
   pantry: () => ({ e: '🧺', t: t('q.pantry.t'), sub: t('q.pantry.s'), body: pantryBody() }),
-  key: () => ({ e: '🔑', t: t('q.key.t'), sub: t('q.key.s'), skip: t('q.key.skip'), body: keyField() }),
+  key: () => ({ e: '🔑', t: t('q.key.t'), sub: t('q.key.s'), skip: t('q.key.skip'), body: provBox() }),
   done: () => ({ hero: true, cta: t('done.cta'), act: 'finish', body: `<div class="stackemo"><span>🎉</span></div><h1 class="hero-h tight">${t('q.done.t')}</h1>
     <div class="recap">
       <div class="card"><span>🧑‍🤝‍🧑</span><div><b>${S.people.map(p => p.emoji + ' ' + esc(p.name)).join('  ')}</b><small>${t(S.people.length > 1 ? 'done.pn' : 'done.p1', { n: S.people.length })}</small></div></div>
       <div class="card"><span>👨‍🍳</span><div><b>${t('done.cook', { skill: t('skill.' + S.house.skill), m: S.house.maxMin })}</b><small>${t('done.meals', { n: S.house.meals.length })}</small></div></div>
-      <div class="card"><span>🧺</span><div><b>${t('done.pantry', { n: Object.values(S.inventory).filter(Boolean).length })}</b><small>${S.apiKey ? t('done.keyok') : t('done.keyno')}</small></div></div>
+      <div class="card"><span>🧺</span><div><b>${t('done.pantry', { n: Object.values(S.inventory).filter(Boolean).length })}</b><small>${apiKey() ? t('done.keyok') : t('done.keyno')}</small></div></div>
     </div>` }),
 };
 
@@ -316,7 +331,7 @@ function todayView() {
   return `<div class="brandbar">${logo('row sm')}<button class="ico themebtn" data-act="flip" aria-label="${esc(t('theme.flip'))}">${effective() === 'dark' ? '☀️' : '🌙'}</button></div>
   <div class="greet">${g}<small>${dateLabel(D)} · ${t('today.hungry')}</small></div>
   <div class="meals-pick"><div class="chips">${am.map(m => chip('tm', `data-m="${m}"`, `${MEALS[m]} ${mealName(m)}`, ui.meals[m])).join('')}</div></div>
-  ${!S.apiKey ? `<div class="card nudge"><div class="big-e">🔑</div><h3>${t('nudge.t')}</h3><p class="sub">${t('nudge.s')}</p><button class="btn" data-act="go" data-v="house">${t('nudge.btn')}</button></div>` :
+  ${!apiKey() ? `<div class="card nudge"><div class="big-e">🔑</div><h3>${t('nudge.t')}</h3><p class="sub">${t('nudge.s')}</p><button class="btn" data-act="gokey">${t('nudge.btn')}</button></div>` :
     `<button class="btn big" data-act="plan" ${!sel.length || ui.loading ? 'disabled' : ''}>${p ? t('today.again') : t('today.plan')}</button>`}
   ${total ? `<div class="progress"><i style="width:${picks / total * 100}%"></i></div><div class="pl">${picks === total ? t('prog.all') : t('prog.n', { a: picks, b: total })}</div>` : ''}
   ${am.map(m => {
@@ -404,6 +419,8 @@ const acts = {
   addRow: () => { S.people.push(newPerson()); render(); const ins = document.querySelectorAll('[data-bind=pname]'); ins[ins.length - 1].focus(); ins[ins.length - 1].scrollIntoView({ block: 'nearest' }); },
   delP: d => { S.people.splice(+d.i, 1); save(); render(); },
   finish: () => { S.done = true; save(); go('today'); confetti(innerWidth / 2, innerHeight / 3, 120); buzz([20, 40, 20]); },
+  gokey: () => { go('house'); $('#aisec')?.scrollIntoView({ block: 'start' }); }, // from the Today nudge: land on the key, not the top of Settings
+  prov: d => { S.provider = d.v; save(); render(); },
   theme: d => { S.theme = d.v; save(); applyTheme(); render(); },
   flip: () => { S.theme = effective() === 'dark' ? 'light' : 'dark'; save(); applyTheme(); render(); },
   addP: () => openPerson(-1),
@@ -494,7 +511,8 @@ document.addEventListener('input', e => {
     $('#sbig').textContent = spiceFace(n); $('#sname').textContent = t('spice.' + n); $('#sdesc').textContent = t(`spice.${n}.d`);
   } else if (b === 'spice') { ui.draft.spice = +el.value; $('#sp').textContent = '🌶️'.repeat(+el.value); }
   else if (b === 'notes') { S.house.notes = el.value; save(); }
-  else if (b === 'apiKey') { S.apiKey = el.value.trim(); save(); }
+  else if (b === 'apiKey') { S.keys[S.provider] = el.value.trim(); save(); }
+  else if (b === 'model') { el.value.trim() ? (S.models[S.provider] = el.value.trim()) : delete S.models[S.provider]; save(); }
 });
 
 (async function boot() {
