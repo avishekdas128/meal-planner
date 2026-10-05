@@ -161,7 +161,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); height: 28px; }
 
 /* ---------- logo: the word for "food" cycles through every supported script ---------- */
 .logo { display: inline-flex; align-items: baseline; gap: .28em; line-height: 1.3; white-space: nowrap; font-family: var(--serif); }
-.logo .kw { display: inline-block; min-width: 3.4em; text-align: end; }
+.logo .kw { display: inline-block; } /* no min-width: a fixed box right-aligned the word and indented short words */
 .logo em { font: 400 1em var(--serif); font-style: normal; color: var(--accent); }
 .kw.flip { animation: kwin .5s cubic-bezier(.2, .8, .3, 1); }
 @keyframes kwin { from { opacity: 0; transform: translateY(.45em); } }
