@@ -3,6 +3,7 @@
 // A MutationObserver handles everything the app renders later (screens, toasts, dialogs) before the browser paints.
 const RE = /\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic}️?)*/gu;
 const SKIP = /^(SCRIPT|STYLE|TEXTAREA|OPTION|TITLE)$/;
+const failed = new Set(); // emoji with no bundled file: shown as plain text and never retried (retrying would loop: text -> image -> error -> text ...)
 const code = s => [...s].map(c => c.codePointAt(0).toString(16)).filter(c => c !== 'fe0f').join('-');
 
 function swap(node) {
@@ -13,6 +14,7 @@ function swap(node) {
   const frag = document.createDocumentFragment();
   let last = 0;
   for (const m of hits) {
+    if (failed.has(code(m[0]))) continue; // leave this one as text
     if (m.index > last) frag.append(t.slice(last, m.index));
     const img = new Image();
     img.className = 'emj'; img.alt = m[0]; img.draggable = false; img.decoding = 'async';
@@ -20,6 +22,7 @@ function swap(node) {
     frag.append(img);
     last = m.index + m[0].length;
   }
+  if (!frag.childNodes.length) return; // every emoji here is a known miss: nothing to swap
   if (last < t.length) frag.append(t.slice(last));
   node.replaceWith(frag);
 }
@@ -33,7 +36,7 @@ function walk(root) {
 // no bundled file for this emoji? fall back to the system glyph instead of a broken image
 document.addEventListener('error', e => {
   const el = e.target;
-  if (el.tagName === 'IMG' && el.classList.contains('emj')) el.replaceWith(document.createTextNode(el.alt));
+  if (el.tagName === 'IMG' && el.classList.contains('emj')) { failed.add(code(el.alt)); el.replaceWith(document.createTextNode(el.alt)); }
 }, true);
 
 new MutationObserver(list => {
