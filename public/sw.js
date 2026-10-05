@@ -1,4 +1,4 @@
-const CACHE = 'kkb-v19';
+const CACHE = 'kkb-v20';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'data.js', 'i18n.js', 'providers.js', 'emoji.js', 'theme-boot.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'lang/en.js', 'lang/hi.js', 'lang/bn.js', 'lang/mr.js', 'lang/te.js', 'lang/ta.js', 'lang/gu.js', 'lang/kn.js', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', e => {
