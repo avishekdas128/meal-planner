@@ -4,6 +4,8 @@
 
 It's a PWA built for phones. There is no backend and no build step, just static files and a Claude API key that stays on your device.
 
+**Live:** https://meal-planner.avishekdas128.workers.dev
+
 <p align="center">
   <img src="docs/screenshots/01-language.jpg" width="19%" alt="Language picker">
   <img src="docs/screenshots/02-flatmates.jpg" width="19%" alt="Add all flatmates at once">
